@@ -4,6 +4,10 @@
  */
 
 :root {
+  /* Typography */
+  --font-family-primary: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Colors */
   --color-vx-warm-neutral-50: #f9f7f7;
   --color-vx-warm-neutral-100: #f1efef;
   --color-vx-warm-neutral-200: #e7e4e4;
@@ -26,4 +30,7 @@
   --color-annotation-style-grey: #8e8e93;
 
   --color-orange-default: #eb6a00;
+
+  /* Shadows */
+  --shadow-elevation-deep-1: 0px 8px 24px 0px #00000008;
 }
