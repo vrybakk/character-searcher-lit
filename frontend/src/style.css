@@ -5,6 +5,9 @@
 
 body {
   position: relative;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   background-color: var(--color-vx-warm-neutral-50);
 }
 
@@ -26,7 +29,7 @@ body::before {
 #app {
   max-width: 1268px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 50px 2rem;
   text-align: center;
   position: relative;
   z-index: 1;

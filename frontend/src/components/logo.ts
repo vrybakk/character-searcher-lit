@@ -12,8 +12,8 @@ export class AppLogo extends LitElement {
     }
 
     .logo__icon {
-      width: 38px;
-      height: 38px;
+      width: 50px;
+      height: 50px;
       flex-shrink: 0;
     }
 
