@@ -3,7 +3,8 @@ import { customElement, state } from 'lit/decorators.js';
 import { getImageUrl } from '../config/api';
 import type { Character } from '../services/api';
 import { getCharacters } from '../services/api';
-import { selectCharacter } from '../services/app-state';
+import { EVENTS, getState, selectCharacter } from '../services/app-state';
+import '../types/events';
 import { BaseElement } from './base-element';
 import './loading-spinner';
 import './sidebar-wrapper';
@@ -16,10 +17,14 @@ export class AppSidebar extends BaseElement {
   @state()
   private declare isLoading: boolean;
 
+  @state()
+  private declare selectedCharacterId: number | null;
+
   constructor() {
     super();
     this.featuredCharacters = [];
     this.isLoading = true;
+    this.selectedCharacterId = null;
   }
 
   static styles = [
@@ -83,6 +88,23 @@ export class AppSidebar extends BaseElement {
         background: var(--color-vx-warm-neutral-500);
       }
 
+      .sidebar__character-item--active {
+        background: var(--color-orange-default);
+      }
+
+      .sidebar__character-item--active .sidebar__character-name {
+        color: var(--color-bw-white);
+      }
+
+      .sidebar__character-item--active .sidebar__character-icon img {
+        filter: brightness(0) invert(1);
+      }
+
+      .sidebar__character-item--active:hover {
+        background: var(--color-orange-default);
+        opacity: 0.9;
+      }
+
       .sidebar__character-icon {
         width: 24px;
         height: 24px;
@@ -115,8 +137,8 @@ export class AppSidebar extends BaseElement {
       }
 
       .sidebar__footer span {
-        margin-right: 8px;
-        padding-right: 8px;
+        margin-right: 4px;
+        padding-right: 6px;
         border-right: 1px solid var(--color-vx-warm-neutral-400);
       }
 
@@ -124,6 +146,7 @@ export class AppSidebar extends BaseElement {
         color: var(--color-orange-default);
         text-decoration: underline;
         cursor: pointer;
+        font-weight: var(--font-weight-semibold);
       }
 
       .sidebar__footer-link:hover {
@@ -144,8 +167,22 @@ export class AppSidebar extends BaseElement {
 
   async connectedCallback(): Promise<void> {
     super.connectedCallback();
+    const state = getState();
+    this.selectedCharacterId = state.selectedCharacterId;
+    window.addEventListener(EVENTS.STATE_UPDATED, this.handleStateUpdate);
     await this.fetchFeaturedCharacters();
   }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener(EVENTS.STATE_UPDATED, this.handleStateUpdate);
+  }
+
+  private handleStateUpdate = (): void => {
+    const state = getState();
+    this.selectedCharacterId = state.selectedCharacterId;
+    this.requestUpdate();
+  };
 
   private async fetchFeaturedCharacters(): Promise<void> {
     try {
@@ -175,7 +212,12 @@ export class AppSidebar extends BaseElement {
                 <div class="sidebar__character-list">
                   ${this.featuredCharacters.map(
                     (character) => html`
-                      <div class="sidebar__character-item" @click=${() => this.handleCharacterClick(character.id)}>
+                      <div
+                        class="sidebar__character-item ${this.selectedCharacterId === character.id
+                          ? 'sidebar__character-item--active'
+                          : ''}"
+                        @click=${() => this.handleCharacterClick(character.id)}
+                      >
                         ${character.icon
                           ? html`<div class="sidebar__character-icon">
                               <img src="${getImageUrl(character.icon)}" alt="${character.name}" />

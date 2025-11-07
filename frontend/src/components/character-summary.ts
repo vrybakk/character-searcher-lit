@@ -93,6 +93,17 @@ export class AppCharacterSummary extends BaseElement {
         color: var(--color-vx-warm-neutral-700);
       }
 
+      .character-summary__values {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .character-summary__values .character-summary__value {
+        margin-top: 0;
+      }
+
       @media (max-width: 768px) {
         .character-summary {
           gap: 16px;
@@ -148,13 +159,13 @@ export class AppCharacterSummary extends BaseElement {
         </div>
         <div class="character-summary__info">
           <div class="character-summary__info-row">
-            <span class="character-summary__label">Name</span>
+            <span class="character-summary__label">Name:</span>
             <span class="character-summary__value">${this.character.name}</span>
           </div>
           ${this.character.gender
             ? html`
                 <div class="character-summary__info-row">
-                  <span class="character-summary__label">Gender</span>
+                  <span class="character-summary__label">Gender:</span>
                   <span class="character-summary__value">${this.character.gender}</span>
                 </div>
               `
@@ -162,20 +173,20 @@ export class AppCharacterSummary extends BaseElement {
           ${this.character.homeworld
             ? html`
                 <div class="character-summary__info-row">
-                  <span class="character-summary__label">Homeworld</span>
+                  <span class="character-summary__label">Homeworld:</span>
                   <span class="character-summary__value">${this.character.homeworld}</span>
                 </div>
               `
             : ''}
           ${films.length > 0
-            ? films.map(
-                (film) => html`
-                  <div class="character-summary__info-row">
-                    <span class="character-summary__label">Films</span>
-                    <span class="character-summary__value">${film}</span>
+            ? html`
+                <div class="character-summary__info-row">
+                  <span class="character-summary__label">Films:</span>
+                  <div class="character-summary__values">
+                    ${films.map((film) => html`<span class="character-summary__value">${film}</span>`)}
                   </div>
-                `
-              )
+                </div>
+              `
             : ''}
         </div>
       </div>
