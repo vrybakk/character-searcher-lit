@@ -1,53 +1,57 @@
-import { LitElement, css, html } from 'lit';
+import { css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { BaseElement } from './base-element.js';
 
 @customElement('app-search')
-export class AppSearch extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-      flex: 1;
-    }
+export class AppSearch extends BaseElement {
+  static styles = [
+    ...super.styles,
+    css`
+      :host {
+        display: block;
+        flex: 1;
+      }
 
-    .search {
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 8px 0px 8px 16px;
-      gap: 8px;
-      width: 100%;
-      height: 48px;
-      background: var(--color-sl-color-neutral-0);
-      border: 1px solid var(--color-sl-grey-neutral-300);
-      box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.02);
-      border-radius: 32px;
-    }
+      .search {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 8px 0px 8px 16px;
+        gap: 8px;
+        width: 100%;
+        height: 48px;
+        background: var(--color-sl-color-neutral-0);
+        border: 1px solid var(--color-sl-grey-neutral-300);
+        box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.02);
+        border-radius: 32px;
+      }
 
-    .search__icon {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-      color: var(--color-vx-warm-neutral-700);
-    }
+      .search__icon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        color: var(--color-vx-warm-neutral-700);
+      }
 
-    .search__input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-family: var(--font-family-primary);
-      font-size: 14px;
-      line-height: 160%;
-      letter-spacing: -0.03em;
-      color: var(--color-vx-warm-neutral-700);
-      min-width: 0;
-    }
+      .search__input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: var(--font-family-primary);
+        font-size: 14px;
+        line-height: 160%;
+        letter-spacing: -0.03em;
+        color: var(--color-vx-warm-neutral-700);
+        min-width: 0;
+      }
 
-    .search__input::placeholder {
-      color: var(--color-sl-grey-neutral-500);
-    }
-  `;
+      .search__input::placeholder {
+        color: var(--color-sl-grey-neutral-500);
+      }
+    `,
+  ];
 
   render() {
     return html`

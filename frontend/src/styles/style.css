@@ -20,8 +20,8 @@ body::before {
   height: 100%;
   background-image: url('/img/ship.svg');
   background-repeat: no-repeat;
-  background-position: clamp(-75px, -15vw, -75px) clamp(-30px, -10vh, -30px);
-  background-size: clamp(400px, 30vw, 680px) auto;
+  background-position: clamp(-75px, -15vw, -130px) clamp(-30px, -10vh, -50px);
+  background-size: clamp(400px, 50vw, 680px) auto;
   pointer-events: none;
   z-index: 0;
 }
@@ -29,7 +29,7 @@ body::before {
 #app {
   max-width: 1268px;
   margin: 0 auto;
-  padding: 50px 2rem;
+  padding: 50px 15px;
   text-align: center;
   position: relative;
   z-index: 1;
