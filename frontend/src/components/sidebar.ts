@@ -1,10 +1,27 @@
 import { css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { BaseElement } from './base-element.js';
-import './sidebar-wrapper.js';
+import { customElement, state } from 'lit/decorators.js';
+import { getImageUrl } from '../config/api';
+import type { Character } from '../services/api';
+import { getCharacters } from '../services/api';
+import { selectCharacter } from '../services/app-state';
+import { BaseElement } from './base-element';
+import './loading-spinner';
+import './sidebar-wrapper';
 
 @customElement('app-sidebar')
 export class AppSidebar extends BaseElement {
+  @state()
+  private declare featuredCharacters: Character[];
+
+  @state()
+  private declare isLoading: boolean;
+
+  constructor() {
+    super();
+    this.featuredCharacters = [];
+    this.isLoading = true;
+  }
+
   static styles = [
     ...super.styles,
     css`
@@ -27,9 +44,8 @@ export class AppSidebar extends BaseElement {
 
       .sidebar__featured-header {
         width: 100%;
-        font-family: var(--font-family-primary);
-        font-size: 20px;
-        font-weight: 400;
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-normal);
         color: var(--color-vx-warm-neutral-700);
         text-align: left;
         margin: 0;
@@ -63,7 +79,7 @@ export class AppSidebar extends BaseElement {
         background: var(--color-vx-warm-neutral-100);
       }
 
-      .sidebar__character-item:hover .sidebar__character-icon {
+      .sidebar__character-item:hover .sidebar__character-icon:not(:has(img)) {
         background: var(--color-vx-warm-neutral-500);
       }
 
@@ -71,25 +87,30 @@ export class AppSidebar extends BaseElement {
         width: 24px;
         height: 24px;
         flex-shrink: 0;
-        background: var(--color-vx-warm-neutral-400);
         border-radius: 4px;
-        transition: background-color 0.2s ease;
+        overflow: hidden;
+      }
+
+      .sidebar__character-icon img {
+        width: 100%;
+        height: 100%;
+        border-radius: 4px;
+        object-fit: cover;
+        display: block;
       }
 
       .sidebar__character-name {
-        font-family: var(--font-family-primary);
-        font-size: 18px;
-        line-height: 22px;
-        font-weight: 400;
+        font-size: var(--font-size-md);
+        line-height: var(--line-height-22);
+        font-weight: var(--font-weight-normal);
         color: var(--color-vx-warm-neutral-700);
       }
 
       .sidebar__footer {
-        font-family: var(--font-family-primary);
-        font-size: 16px;
-        line-height: 19px;
-        font-weight: 400;
-        letter-spacing: -0.03em;
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-19);
+        font-weight: var(--font-weight-normal);
+        letter-spacing: var(--letter-spacing-tight);
         color: var(--color-vx-warm-neutral-400);
       }
 
@@ -111,25 +132,51 @@ export class AppSidebar extends BaseElement {
     `,
   ];
 
+  async connectedCallback(): Promise<void> {
+    super.connectedCallback();
+    await this.fetchFeaturedCharacters();
+  }
+
+  private async fetchFeaturedCharacters(): Promise<void> {
+    try {
+      this.isLoading = true;
+      const allCharacters = await getCharacters();
+      const uniqueCharacters = Array.from(new Map(allCharacters.map((char) => [char.id, char])).values());
+      this.featuredCharacters = uniqueCharacters.slice(0, 3);
+    } catch (error) {
+      this.featuredCharacters = [];
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private handleCharacterClick(characterId: number): void {
+    selectCharacter(characterId);
+  }
+
   render() {
     return html`
       <app-sidebar-wrapper>
         <div class="sidebar__featured">
           <h2 class="sidebar__featured-header">Featured Characters:</h2>
-          <div class="sidebar__character-list">
-            <div class="sidebar__character-item">
-              <div class="sidebar__character-icon"></div>
-              <span class="sidebar__character-name">Lando Calrissian</span>
-            </div>
-            <div class="sidebar__character-item">
-              <div class="sidebar__character-icon"></div>
-              <span class="sidebar__character-name">Leia Organa</span>
-            </div>
-            <div class="sidebar__character-item">
-              <div class="sidebar__character-icon"></div>
-              <span class="sidebar__character-name">Darth Vader</span>
-            </div>
-          </div>
+          ${this.isLoading
+            ? html`<app-loading-spinner></app-loading-spinner>`
+            : html`
+                <div class="sidebar__character-list">
+                  ${this.featuredCharacters.map(
+                    (character) => html`
+                      <div class="sidebar__character-item" @click=${() => this.handleCharacterClick(character.id)}>
+                        ${character.icon
+                          ? html`<div class="sidebar__character-icon">
+                              <img src="${getImageUrl(character.icon)}" alt="${character.name}" />
+                            </div>`
+                          : html`<div class="sidebar__character-icon"></div>`}
+                        <span class="sidebar__character-name">${character.name}</span>
+                      </div>
+                    `
+                  )}
+                </div>
+              `}
         </div>
         <div class="sidebar__footer">
           <span>2025 Star Wardens LTD.</span>

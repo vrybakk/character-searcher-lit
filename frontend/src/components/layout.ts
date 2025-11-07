@@ -1,39 +1,81 @@
-import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { css, html } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+import { router } from '../services/router';
+import { BaseElement } from './base-element';
+import './character-summary';
 import './sidebar';
+import './sidebar-wrapper';
 
 @customElement('app-layout')
-export class AppLayout extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-      width: 100%;
-    }
+export class AppLayout extends BaseElement {
+  @state()
+  private declare currentView: string;
 
-    .layout {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 40px;
-      margin: 40px auto 0;
-      box-sizing: border-box;
-    }
+  private unsubscribeRouter: (() => void) | null = null;
 
-    .layout__sidebar {
-      flex-shrink: 0;
-    }
+  constructor() {
+    super();
+    this.currentView = 'home';
+  }
 
-    .layout__content {
-      flex: 1;
-      min-width: 0;
-    }
+  static styles = [
+    ...super.styles,
+    css`
+      :host {
+        display: block;
+        width: 100%;
+      }
 
-    .layout__sidebar-right {
-      flex-shrink: 0;
-      box-sizing: border-box;
-      min-width: 293px;
+      .layout {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 40px;
+        margin: 40px auto 0;
+        box-sizing: border-box;
+      }
+
+      .layout__sidebar {
+        flex-shrink: 0;
+      }
+
+      .layout__sidebar--right {
+        order: 2;
+      }
+
+      .layout__content {
+        flex: 1;
+        min-width: 0;
+        order: 1;
+      }
+    `,
+  ];
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    const route = router.getCurrentRoute();
+    this.currentView = route.path.startsWith('/character/')
+      ? 'character-detail'
+      : route.path === '/search'
+      ? 'search'
+      : 'home';
+
+    this.unsubscribeRouter = router.onRouteChange((route) => {
+      this.currentView = route.path.startsWith('/character/')
+        ? 'character-detail'
+        : route.path === '/search'
+        ? 'search'
+        : 'home';
+      this.requestUpdate();
+    });
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.unsubscribeRouter) {
+      this.unsubscribeRouter();
     }
-  `;
+  }
 
   render() {
     return html`
@@ -47,9 +89,15 @@ export class AppLayout extends LitElement {
         <main class="layout__content">
           <slot></slot>
         </main>
-        <aside class="layout__sidebar-right">
-          <slot name="sidebar-right"></slot>
-        </aside>
+        ${this.currentView === 'character-detail'
+          ? html`
+              <aside class="layout__sidebar layout__sidebar--right">
+                <app-sidebar-wrapper>
+                  <app-character-summary></app-character-summary>
+                </app-sidebar-wrapper>
+              </aside>
+            `
+          : ''}
       </div>
     `;
   }

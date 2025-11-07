@@ -1,20 +1,20 @@
 import { css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
+import { getImageUrl } from '../config/api';
+import type { Character } from '../services/api';
+import '../types/events';
+import { parseJsonField } from '../utils/parse-json-field';
 import { BaseElement } from './base-element';
-
-interface CharacterSummary {
-  id: number;
-  name: string;
-  gender?: string;
-  homeworld?: string;
-  films?: string;
-  icon?: string;
-}
 
 @customElement('app-character-summary')
 export class AppCharacterSummary extends BaseElement {
-  @property({ type: Object })
-  declare character: CharacterSummary | null;
+  @state()
+  private declare character: Character | null;
+
+  constructor() {
+    super();
+    this.character = null;
+  }
 
   static styles = [
     ...super.styles,
@@ -44,14 +44,18 @@ export class AppCharacterSummary extends BaseElement {
       }
 
       .character-summary__icon {
-        position: absolute;
         width: 218px;
         height: 218px;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        background: var(--color-vx-warm-neutral-400);
         border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .character-summary__icon img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
       }
 
       .character-summary__info {
@@ -72,48 +76,55 @@ export class AppCharacterSummary extends BaseElement {
         padding-bottom: 4px;
         display: inline-block;
         width: 100%;
-        font-family: var(--font-family-primary);
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 19px;
-        letter-spacing: -0.03em;
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-19);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: var(--letter-spacing-tight);
         color: var(--color-vx-warm-neutral-400);
         border-bottom: 1px solid var(--color-vx-warm-neutral-300);
       }
 
       .character-summary__value {
         margin-top: 8px;
-        font-family: var(--font-family-primary);
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 19px;
-        letter-spacing: -0.03em;
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-19);
+        font-weight: var(--font-weight-normal);
+        letter-spacing: var(--letter-spacing-tight);
         color: var(--color-vx-warm-neutral-700);
       }
     `,
   ];
 
-  private parseJsonField(field?: string): string[] {
-    if (!field) return [];
-    try {
-      const parsed = JSON.parse(field);
-      return Array.isArray(parsed) ? parsed : [parsed];
-    } catch {
-      return field.split('\n').filter((item) => item.trim());
-    }
+  connectedCallback(): void {
+    super.connectedCallback();
+    window.addEventListener('character-loaded', this.handleCharacterLoaded);
   }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener('character-loaded', this.handleCharacterLoaded);
+  }
+
+  private handleCharacterLoaded = (e: WindowEventMap['character-loaded']): void => {
+    this.character = e.detail?.character || null;
+    this.requestUpdate();
+  };
 
   render() {
     if (!this.character) {
       return html``;
     }
 
-    const films = this.parseJsonField(this.character.films);
+    const films = parseJsonField(this.character.films);
 
     return html`
       <div class="character-summary">
         <div class="character-summary__icon-container">
-          <div class="character-summary__icon"></div>
+          ${this.character.icon
+            ? html`<div class="character-summary__icon">
+                <img src="${getImageUrl(this.character.icon)}" alt="${this.character.name}" />
+              </div>`
+            : html`<div class="character-summary__icon"></div>`}
         </div>
         <div class="character-summary__info">
           <div class="character-summary__info-row">

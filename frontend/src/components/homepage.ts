@@ -1,6 +1,6 @@
 import { css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { BaseElement } from './base-element.js';
+import { BaseElement } from './base-element';
 
 @customElement('app-homepage')
 export class AppHomepage extends BaseElement {
@@ -17,10 +17,9 @@ export class AppHomepage extends BaseElement {
         align-items: flex-start;
         max-width: 620px;
         margin: 0 auto;
-        font-family: var(--font-family-primary);
-        font-size: 14px;
-        line-height: 160%;
-        font-weight: 400;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-relaxed);
+        font-weight: var(--font-weight-normal);
         color: var(--color-vx-warm-neutral-700);
         text-align: left;
         gap: 16px;
@@ -29,9 +28,10 @@ export class AppHomepage extends BaseElement {
       .homepage__heading {
         width: 100%;
         margin-bottom: 4px;
-        font-size: 32px;
-        line-height: 38px;
-        letter-spacing: -0.03em;
+        font-size: var(--font-size-xl);
+        line-height: var(--line-height-38);
+        font-weight: var(--font-weight-normal);
+        letter-spacing: var(--letter-spacing-tight);
       }
 
       .homepage__list {

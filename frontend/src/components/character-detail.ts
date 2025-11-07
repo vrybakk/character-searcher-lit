@@ -1,25 +1,35 @@
 import { css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
+import type { Character } from '../services/api';
+import { getCharacterById } from '../services/api';
+import { router } from '../services/router';
+import { updateDocumentTitle } from '../utils/meta-titles';
+import { parseJsonField } from '../utils/parse-json-field';
 import { BaseElement } from './base-element';
+import './loading-spinner';
 
-interface CharacterDetail {
-  id: number;
-  name: string;
-  birth_year?: string;
-  gender?: string;
-  homeworld?: string;
-  films?: string;
-  description?: string;
-  traits?: string;
-  key_moments?: string;
-  relationships?: string;
-  icon?: string;
-}
+type LoadingState = 'idle' | 'loading' | 'error';
 
 @customElement('app-character-detail')
 export class AppCharacterDetail extends BaseElement {
-  @property({ type: Object })
-  declare character: CharacterDetail | null;
+  @state()
+  private declare character: Character | null;
+
+  @state()
+  private declare loadingState: LoadingState;
+
+  @state()
+  private declare errorMessage: string;
+
+  private unsubscribeRouter: (() => void) | null = null;
+  private isInitialized: boolean = false;
+
+  constructor() {
+    super();
+    this.character = null;
+    this.loadingState = 'idle';
+    this.errorMessage = '';
+  }
 
   static styles = [
     ...super.styles,
@@ -34,7 +44,6 @@ export class AppCharacterDetail extends BaseElement {
         flex-direction: column;
         width: 100%;
         max-width: 620px;
-        font-family: var(--font-family-primary);
         text-align: left;
       }
 
@@ -43,11 +52,10 @@ export class AppCharacterDetail extends BaseElement {
       }
 
       .character-detail__title {
-        font-family: var(--font-family-primary);
-        font-weight: 400;
-        font-size: 32px;
-        line-height: 38px;
-        letter-spacing: -0.03em;
+        font-size: var(--font-size-xl);
+        line-height: var(--line-height-38);
+        font-weight: var(--font-weight-normal);
+        letter-spacing: var(--letter-spacing-tight);
         color: var(--color-vx-warm-neutral-700);
         margin: 0;
       }
@@ -57,10 +65,9 @@ export class AppCharacterDetail extends BaseElement {
       }
 
       .character-detail__paragraph {
-        font-family: var(--font-family-primary);
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 160%;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-relaxed);
+        font-weight: var(--font-weight-normal);
         color: var(--color-vx-warm-neutral-700);
         margin: 0;
       }
@@ -70,10 +77,9 @@ export class AppCharacterDetail extends BaseElement {
       }
 
       .character-detail__section-title {
-        font-family: var(--font-family-primary);
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 160%;
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-relaxed);
+        font-weight: var(--font-weight-semibold);
         color: var(--color-sl-grey-neutral-700);
         margin: 0;
       }
@@ -89,34 +95,106 @@ export class AppCharacterDetail extends BaseElement {
       }
 
       .character-detail__list-item {
-        font-family: var(--font-family-primary);
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 160%;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-relaxed);
+        font-weight: var(--font-weight-normal);
         color: var(--color-sl-grey-neutral-700);
         margin-bottom: 0;
+      }
+
+      .error-state {
+        padding: 40px 0;
+        text-align: center;
+        color: var(--color-annotation-style-pink);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
       }
     `,
   ];
 
-  private parseJsonField(field?: string): string[] {
-    if (!field) return [];
-    try {
-      const parsed = JSON.parse(field);
-      return Array.isArray(parsed) ? parsed : [parsed];
-    } catch {
-      return field.split('\n').filter((item) => item.trim());
+  connectedCallback(): void {
+    super.connectedCallback();
+
+    if (this.isInitialized) {
+      return;
+    }
+
+    this.isInitialized = true;
+
+    const route = router.getCurrentRoute();
+    if (route.path.startsWith('/character/') && route.params.id) {
+      const characterId = parseInt(route.params.id, 10);
+      if (!isNaN(characterId)) {
+        this.fetchCharacter(characterId);
+      }
+    }
+
+    this.unsubscribeRouter = router.onRouteChange((route) => {
+      if (route.path.startsWith('/character/') && route.params.id) {
+        const characterId = parseInt(route.params.id, 10);
+        if (!isNaN(characterId)) {
+          this.fetchCharacter(characterId);
+        }
+      } else {
+        this.character = null;
+        this.loadingState = 'idle';
+        this.errorMessage = '';
+      }
+    });
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.isInitialized = false;
+    if (this.unsubscribeRouter) {
+      this.unsubscribeRouter();
+      this.unsubscribeRouter = null;
     }
   }
 
-  render() {
-    if (!this.character) {
-      return html`<div>No character selected</div>`;
+  private async fetchCharacter(characterId: number): Promise<void> {
+    this.loadingState = 'loading';
+    this.errorMessage = '';
+    this.character = null;
+    this.requestUpdate();
+
+    try {
+      const character = await getCharacterById(characterId);
+      this.character = character;
+      this.loadingState = 'idle';
+
+      updateDocumentTitle(character.name);
+
+      window.dispatchEvent(
+        new CustomEvent('character-loaded', {
+          detail: { character },
+        })
+      );
+    } catch (error) {
+      this.loadingState = 'error';
+      this.errorMessage = error instanceof Error ? error.message : 'Failed to fetch character. Please try again.';
+      this.character = null;
     }
 
-    const traits = this.parseJsonField(this.character.traits);
-    const keyMoments = this.parseJsonField(this.character.key_moments);
-    const relationships = this.parseJsonField(this.character.relationships);
+    this.requestUpdate();
+  }
+
+  render() {
+    if (this.loadingState === 'loading') {
+      return html`<app-loading-spinner></app-loading-spinner>`;
+    }
+
+    if (this.loadingState === 'error') {
+      return html`<div class="error-state">${this.errorMessage}</div>`;
+    }
+
+    if (!this.character) {
+      return html`<div class="character-detail"></div>`;
+    }
+
+    const traits = parseJsonField(this.character.traits);
+    const keyMoments = parseJsonField(this.character.key_moments);
+    const relationships = parseJsonField(this.character.relationships);
 
     return html`
       <div class="character-detail">

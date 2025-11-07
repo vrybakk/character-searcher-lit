@@ -5,7 +5,33 @@
 
 :root {
   /* Typography */
-  --font-family-primary: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: Inter, sans-serif;
+  --font-family-primary: Inter, sans-serif;
+
+  /* Typography Scale - Font Sizes */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-md: 18px;
+  --font-size-lg: 20px;
+  --font-size-xl: 32px;
+  --font-size-2xl: clamp(28px, 4vw, 42px);
+
+  /* Typography Scale - Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-19: 19px;
+  --line-height-22: 22px;
+  --line-height-38: 38px;
+
+  /* Typography Scale - Letter Spacing */
+  --letter-spacing-tight: -0.03em;
+  --letter-spacing-normal: 0;
+
+  /* Typography Scale - Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
 
   /* Colors */
   --color-vx-warm-neutral-50: #f9f7f7;

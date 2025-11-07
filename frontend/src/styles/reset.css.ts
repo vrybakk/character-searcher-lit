@@ -5,6 +5,10 @@ import { css } from 'lit';
  * This reset is applied within Shadow DOM to override user agent styles
  */
 export const resetStyles = css`
+  :host {
+    font-family: var(--font-family-primary);
+  }
+
   *,
   *::before,
   *::after {

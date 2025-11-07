@@ -1,18 +1,36 @@
 import { css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
+import { getImageUrl } from '../config/api';
+import type { Character } from '../services/api';
+import { getCharacters } from '../services/api';
+import { selectCharacter, setLoading } from '../services/app-state';
+import { router } from '../services/router';
 import { BaseElement } from './base-element';
+import './loading-spinner';
 
-interface Character {
-  id: number;
-  name: string;
-  description?: string;
-  icon?: string;
-}
+type LoadingState = 'idle' | 'loading' | 'error';
 
 @customElement('app-character-list')
 export class AppCharacterList extends BaseElement {
-  @property({ type: Array })
-  declare characters: Character[];
+  @state()
+  private declare characters: Character[];
+
+  @state()
+  private declare loadingState: LoadingState;
+
+  @state()
+  private declare errorMessage: string;
+
+  private unsubscribeRouter: (() => void) | null = null;
+  private isInitialized: boolean = false;
+  private currentSearchQuery: string | undefined = undefined;
+
+  constructor() {
+    super();
+    this.characters = [];
+    this.loadingState = 'idle';
+    this.errorMessage = '';
+  }
 
   static styles = [
     ...super.styles,
@@ -58,8 +76,16 @@ export class AppCharacterList extends BaseElement {
       .icon-vector {
         width: 63px;
         height: 63px;
-        background: var(--color-vx-warm-neutral-400);
         border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .icon-vector img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
       }
 
       .character-info {
@@ -67,6 +93,7 @@ export class AppCharacterList extends BaseElement {
         flex-direction: column;
         flex: 1;
         width: 100%;
+        text-align: left;
       }
 
       .character-title {
@@ -74,10 +101,9 @@ export class AppCharacterList extends BaseElement {
       }
 
       .character-title-text {
-        font-family: var(--font-family-primary);
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 160%;
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-relaxed);
+        font-weight: var(--font-weight-semibold);
         color: var(--color-sl-grey-neutral-700);
         margin: 0;
       }
@@ -87,45 +113,140 @@ export class AppCharacterList extends BaseElement {
       }
 
       .character-description-text {
-        font-family: var(--font-family-primary);
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 160%;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-relaxed);
+        font-weight: var(--font-weight-normal);
         color: var(--color-vx-warm-neutral-700);
         margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .empty-state {
         padding: 40px 0;
         text-align: center;
         color: var(--color-vx-warm-neutral-500);
-        font-family: var(--font-family-primary);
-        font-size: 14px;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
+      }
+
+      .error-state {
+        padding: 40px 0;
+        text-align: center;
+        color: var(--color-annotation-style-pink);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
       }
     `,
   ];
 
-  render() {
-    const characters = this.characters || [];
+  connectedCallback(): void {
+    super.connectedCallback();
 
-    if (characters.length === 0) {
+    const route = router.getCurrentRoute();
+    const searchQuery = route.path === '/search' && route.query.q ? route.query.q : undefined;
+
+    if (!this.isInitialized) {
+      this.isInitialized = true;
+      this.currentSearchQuery = searchQuery;
+      this.fetchCharacters(searchQuery);
+
+      this.unsubscribeRouter = router.onRouteChange((route) => {
+        if (route.path === '/search') {
+          const query = route.query.q || undefined;
+          if (query !== this.currentSearchQuery) {
+            this.currentSearchQuery = query;
+            this.fetchCharacters(query);
+          }
+        } else {
+          this.currentSearchQuery = undefined;
+          this.characters = [];
+          this.loadingState = 'idle';
+          this.errorMessage = '';
+        }
+      });
+    } else {
+      if (searchQuery !== this.currentSearchQuery) {
+        this.currentSearchQuery = searchQuery;
+        this.fetchCharacters(searchQuery);
+      }
+    }
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.unsubscribeRouter) {
+      this.unsubscribeRouter();
+      this.unsubscribeRouter = null;
+    }
+  }
+
+  private async fetchCharacters(searchQuery?: string): Promise<void> {
+    if (this.loadingState === 'loading' && searchQuery === this.currentSearchQuery) {
+      return;
+    }
+
+    this.currentSearchQuery = searchQuery;
+    this.loadingState = 'loading';
+    this.errorMessage = '';
+    setLoading(true);
+    this.requestUpdate();
+
+    try {
+      const results = await getCharacters(searchQuery);
+      this.characters = results;
+      this.loadingState = 'idle';
+    } catch (error) {
+      this.loadingState = 'error';
+      this.errorMessage = error instanceof Error ? error.message : 'Failed to fetch characters. Please try again.';
+      this.characters = [];
+    } finally {
+      setLoading(false);
+    }
+
+    this.requestUpdate();
+  }
+
+  private handleCharacterClick(characterId: number): void {
+    selectCharacter(characterId);
+  }
+
+  render() {
+    if (this.loadingState === 'loading') {
+      return html`<app-loading-spinner></app-loading-spinner>`;
+    }
+
+    if (this.loadingState === 'error') {
+      return html`<div class="error-state">${this.errorMessage}</div>`;
+    }
+
+    if (this.characters.length === 0) {
       return html`<div class="empty-state">No characters found</div>`;
     }
 
     return html`
       <div class="character-list">
-        ${characters.map(
+        ${this.characters.map(
           (character) => html`
-            <div class="character-item">
+            <div class="character-item" @click=${() => this.handleCharacterClick(character.id)}>
               <div class="character-icon-wrapper">
-                <div class="icon-vector"></div>
+                ${character.icon
+                  ? html`<div class="icon-vector">
+                      <img src="${getImageUrl(character.icon)}" alt="${character.name}" />
+                    </div>`
+                  : html`<div class="icon-vector"></div>`}
               </div>
               <div class="character-info">
                 <div class="character-title">
                   <h3 class="character-title-text">${character.name}</h3>
                 </div>
                 <div class="character-description">
-                  <p class="character-description-text">${character.description || 'No description available.'}</p>
+                  <p class="character-description-text">
+                    ${character.description || character.birth_year || 'No description available.'}
+                  </p>
                 </div>
               </div>
             </div>

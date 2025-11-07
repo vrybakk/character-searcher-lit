@@ -8,6 +8,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+RUN mkdir -p /app/static-data && cp -r /app/data/*.png /app/static-data/ 2>/dev/null || true
 
 EXPOSE 8000
 
