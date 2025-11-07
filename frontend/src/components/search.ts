@@ -141,6 +141,16 @@ export class AppSearch extends BaseElement {
         opacity: 0.7;
       }
 
+      .search__clear:not(.search__clear--hidden):focus {
+        outline: 2px solid var(--color-vx-warm-neutral-700);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      .search__clear:not(.search__clear--hidden):active {
+        opacity: 0.6;
+      }
+
       .search__clear-icon {
         width: 16px;
         height: 16px;

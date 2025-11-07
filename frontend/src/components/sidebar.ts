@@ -84,6 +84,16 @@ export class AppSidebar extends BaseElement {
         background: var(--color-vx-warm-neutral-100);
       }
 
+      .sidebar__character-item:focus {
+        outline: 2px solid var(--color-vx-warm-neutral-700);
+        outline-offset: -2px;
+        background: var(--color-vx-warm-neutral-100);
+      }
+
+      .sidebar__character-item:active {
+        background: var(--color-vx-warm-neutral-200);
+      }
+
       .sidebar__character-item:hover .sidebar__character-icon:not(:has(img)) {
         background: var(--color-vx-warm-neutral-500);
       }
@@ -103,6 +113,19 @@ export class AppSidebar extends BaseElement {
       .sidebar__character-item--active:hover {
         background: var(--color-orange-default);
         opacity: 0.9;
+      }
+
+      .sidebar__character-item--active:focus {
+        outline: 2px solid var(--color-bw-white);
+        outline-offset: -2px;
+        background: var(--color-orange-default);
+        box-shadow: 0 0 0 2px var(--color-bw-white), 0 0 0 4px var(--color-orange-default);
+      }
+
+      .sidebar__character-item--active:active {
+        background: var(--color-orange-default);
+        opacity: 0.85;
+        transform: scale(0.98);
       }
 
       .sidebar__character-icon {
@@ -148,10 +171,21 @@ export class AppSidebar extends BaseElement {
         text-underline-offset: 0.2em;
         cursor: pointer;
         font-weight: var(--font-weight-semibold);
+        transition: opacity 0.2s ease;
       }
 
       .sidebar__footer-link:hover {
         opacity: 0.8;
+      }
+
+      .sidebar__footer-link:focus {
+        outline: 2px solid var(--color-orange-default);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      .sidebar__footer-link:active {
+        opacity: 0.7;
       }
 
       @media (max-width: 768px) {
@@ -218,6 +252,14 @@ export class AppSidebar extends BaseElement {
                           ? 'sidebar__character-item--active'
                           : ''}"
                         @click=${() => this.handleCharacterClick(character.id)}
+                        tabindex="0"
+                        role="button"
+                        @keydown=${(e: KeyboardEvent) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.handleCharacterClick(character.id);
+                          }
+                        }}
                       >
                         ${character.icon
                           ? html`<div class="sidebar__character-icon">

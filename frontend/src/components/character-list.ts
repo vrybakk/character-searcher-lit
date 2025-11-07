@@ -64,6 +64,16 @@ export class AppCharacterList extends BaseElement {
         background: var(--color-vx-warm-neutral-100);
       }
 
+      .character-item:focus {
+        outline: 2px solid var(--color-vx-warm-neutral-700);
+        outline-offset: -2px;
+        background: var(--color-vx-warm-neutral-100);
+      }
+
+      .character-item:active {
+        background: var(--color-vx-warm-neutral-200);
+      }
+
       .character-icon-wrapper {
         display: flex;
         justify-content: center;
@@ -262,7 +272,18 @@ export class AppCharacterList extends BaseElement {
       <div class="character-list">
         ${this.characters.map(
           (character) => html`
-            <div class="character-item" @click=${() => this.handleCharacterClick(character.id)}>
+            <div
+              class="character-item"
+              @click=${() => this.handleCharacterClick(character.id)}
+              tabindex="0"
+              role="button"
+              @keydown=${(e: KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  this.handleCharacterClick(character.id);
+                }
+              }}
+            >
               <div class="character-icon-wrapper">
                 ${character.icon
                   ? html`<div class="icon-vector">
