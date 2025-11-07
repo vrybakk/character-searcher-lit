@@ -32,19 +32,14 @@ export class AppCharacterList extends BaseElement {
       }
 
       .character-item {
-        box-sizing: border-box;
         display: flex;
-        flex-direction: row;
         align-items: flex-start;
-        padding: 12px 0px 0px;
+        padding-top: 12px;
         gap: 8px;
         width: 100%;
-        min-height: 110px;
         border-bottom: 1px solid var(--color-vx-warm-neutral-300);
-        flex: none;
         cursor: pointer;
         transition: background-color 0.2s ease;
-        text-align: left;
       }
 
       .character-item:hover {
@@ -53,26 +48,11 @@ export class AppCharacterList extends BaseElement {
 
       .character-icon-wrapper {
         display: flex;
-        flex-direction: row;
         justify-content: center;
         align-items: center;
-        padding: 10px 0px;
+        padding: 10px 0;
         width: 90px;
-        height: 80px;
-        border-radius: 2px;
-        flex: none;
         flex-shrink: 0;
-      }
-
-      .icon-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 0px;
-        width: 63px;
-        height: 63px;
-        position: relative;
-        flex: none;
       }
 
       .icon-vector {
@@ -80,71 +60,38 @@ export class AppCharacterList extends BaseElement {
         height: 63px;
         background: var(--color-vx-warm-neutral-400);
         border-radius: 50%;
-        flex: none;
-        z-index: 0;
       }
 
       .character-info {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        padding: 0px;
-        width: 100%;
-        min-height: 98px;
         flex: 1;
-        box-sizing: border-box;
+        width: 100%;
       }
 
       .character-title {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        padding: 0px 0px 12px;
-        gap: 8px;
-        width: 100%;
-        min-height: 38px;
-        flex: none;
-        align-self: stretch;
+        padding-bottom: 12px;
       }
 
       .character-title-text {
-        width: 100%;
-        min-height: 26px;
         font-family: var(--font-family-primary);
-        font-style: normal;
         font-weight: 600;
         font-size: 16px;
         line-height: 160%;
         color: var(--color-sl-grey-neutral-700);
-        flex: none;
-        flex-grow: 1;
         margin: 0;
       }
 
       .character-description {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        padding: 0px 0px 16px;
-        gap: 8px;
-        width: 100%;
-        min-height: 60px;
-        flex: none;
-        align-self: stretch;
+        padding-bottom: 16px;
       }
 
       .character-description-text {
-        width: 100%;
-        min-height: 44px;
         font-family: var(--font-family-primary);
-        font-style: normal;
         font-weight: 400;
         font-size: 14px;
         line-height: 160%;
         color: var(--color-vx-warm-neutral-700);
-        flex: none;
-        flex-grow: 1;
         margin: 0;
       }
 
@@ -171,9 +118,7 @@ export class AppCharacterList extends BaseElement {
           (character) => html`
             <div class="character-item">
               <div class="character-icon-wrapper">
-                <div class="icon-container">
-                  <div class="icon-vector"></div>
-                </div>
+                <div class="icon-vector"></div>
               </div>
               <div class="character-info">
                 <div class="character-title">

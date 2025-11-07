@@ -19,9 +19,19 @@ export class AppLayout extends LitElement {
       box-sizing: border-box;
     }
 
+    .layout__sidebar {
+      flex-shrink: 0;
+    }
+
     .layout__content {
       flex: 1;
       min-width: 0;
+    }
+
+    .layout__sidebar-right {
+      flex-shrink: 0;
+      box-sizing: border-box;
+      min-width: 293px;
     }
   `;
 
@@ -30,11 +40,16 @@ export class AppLayout extends LitElement {
       <app-header></app-header>
       <div class="layout">
         <aside class="layout__sidebar">
-          <app-sidebar></app-sidebar>
+          <slot name="sidebar-left">
+            <app-sidebar></app-sidebar>
+          </slot>
         </aside>
         <main class="layout__content">
           <slot></slot>
         </main>
+        <aside class="layout__sidebar-right">
+          <slot name="sidebar-right"></slot>
+        </aside>
       </div>
     `;
   }

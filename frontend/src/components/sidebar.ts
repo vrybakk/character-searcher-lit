@@ -1,6 +1,7 @@
 import { css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { BaseElement } from './base-element.js';
+import './sidebar-wrapper.js';
 
 @customElement('app-sidebar')
 export class AppSidebar extends BaseElement {
@@ -9,25 +10,7 @@ export class AppSidebar extends BaseElement {
     css`
       :host {
         display: block;
-      }
-
-      .sidebar {
-        position: sticky;
-        top: 40px;
         width: 100%;
-        max-width: 300px;
-        min-height: 330px;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 24px;
-        box-sizing: border-box;
-        background: var(--color-bw-white);
-        border: 1px solid var(--color-vx-warm-neutral-200);
-        box-shadow: var(--shadow-elevation-deep-1);
-        border-radius: 16px;
       }
 
       .sidebar__featured {
@@ -130,7 +113,7 @@ export class AppSidebar extends BaseElement {
 
   render() {
     return html`
-      <div class="sidebar">
+      <app-sidebar-wrapper>
         <div class="sidebar__featured">
           <h2 class="sidebar__featured-header">Featured Characters:</h2>
           <div class="sidebar__character-list">
@@ -152,7 +135,7 @@ export class AppSidebar extends BaseElement {
           <span>2025 Star Wardens LTD.</span>
           <a href="#" class="sidebar__footer-link">About us</a>
         </div>
-      </div>
+      </app-sidebar-wrapper>
     `;
   }
 }
