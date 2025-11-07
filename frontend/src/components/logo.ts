@@ -22,9 +22,15 @@ export class AppLogo extends BaseElement {
       }
 
       .logo:focus {
-        outline: 2px solid var(--color-vx-warm-neutral-700);
+        outline: none;
+        opacity: 0.75;
+      }
+
+      .logo:focus-visible {
+        outline: 1px solid var(--color-vx-warm-neutral-400);
         outline-offset: 2px;
         border-radius: 4px;
+        opacity: 0.75;
       }
 
       .logo:active {

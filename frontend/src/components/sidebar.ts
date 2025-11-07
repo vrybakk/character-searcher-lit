@@ -85,8 +85,8 @@ export class AppSidebar extends BaseElement {
       }
 
       .sidebar__character-item:focus {
-        outline: 2px solid var(--color-vx-warm-neutral-700);
-        outline-offset: -2px;
+        outline: 1px solid var(--color-vx-warm-neutral-700);
+        outline-offset: -1px;
         background: var(--color-vx-warm-neutral-100);
       }
 
@@ -116,10 +116,10 @@ export class AppSidebar extends BaseElement {
       }
 
       .sidebar__character-item--active:focus {
-        outline: 2px solid var(--color-bw-white);
-        outline-offset: -2px;
+        outline: 1px solid var(--color-bw-white);
+        outline-offset: -1px;
         background: var(--color-orange-default);
-        box-shadow: 0 0 0 2px var(--color-bw-white), 0 0 0 4px var(--color-orange-default);
+        box-shadow: 0 0 0 1px var(--color-bw-white);
       }
 
       .sidebar__character-item--active:active {
