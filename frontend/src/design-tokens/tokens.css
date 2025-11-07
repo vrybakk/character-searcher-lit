@@ -5,7 +5,7 @@
 
 :root {
   /* Typography */
-  --font-family-primary: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-primary: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Colors */
   --color-vx-warm-neutral-50: #f9f7f7;
