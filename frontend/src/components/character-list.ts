@@ -140,6 +140,32 @@ export class AppCharacterList extends BaseElement {
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-normal);
       }
+
+      @media (max-width: 768px) {
+        .character-list {
+          padding: 4px;
+        }
+
+        .character-item {
+          padding-top: 8px;
+          gap: 8px;
+        }
+
+        .character-icon-wrapper {
+          width: 70px;
+          padding: 8px 0;
+        }
+
+        .icon-vector {
+          width: 50px;
+          height: 50px;
+        }
+
+        .empty-state,
+        .error-state {
+          padding: 24px 0;
+        }
+      }
     `,
   ];
 

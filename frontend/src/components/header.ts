@@ -26,6 +26,22 @@ export class AppHeader extends BaseElement {
         box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.03);
         border-radius: 100px;
       }
+
+      @media (max-width: 768px) {
+        .header {
+          padding: 16px 20px;
+          gap: 16px;
+          border-radius: 24px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+      }
     `,
   ];
 

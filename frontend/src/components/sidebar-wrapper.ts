@@ -33,6 +33,14 @@ export class AppSidebarWrapper extends BaseElement {
       ::slotted(*) {
         width: 100%;
       }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          position: static;
+          max-width: 100%;
+          padding: 12px;
+        }
+      }
     `,
   ];
 

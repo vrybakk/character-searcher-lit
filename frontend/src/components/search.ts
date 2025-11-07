@@ -162,6 +162,20 @@ export class AppSearch extends BaseElement {
           transform: rotate(360deg);
         }
       }
+
+      @media (max-width: 768px) {
+        .search {
+          padding: 6px 12px;
+          height: 44px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .search {
+          padding: 6px 10px;
+          height: 40px;
+        }
+      }
     `,
   ];
 

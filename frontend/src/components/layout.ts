@@ -48,6 +48,51 @@ export class AppLayout extends BaseElement {
         min-width: 0;
         order: 1;
       }
+
+      @media (max-width: 1024px) {
+        .layout {
+          gap: 24px;
+          flex-direction: column;
+        }
+
+        .layout__sidebar {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .layout__sidebar--right {
+          order: 3;
+        }
+
+        .layout__content {
+          order: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          gap: 20px;
+          margin: 20px auto 0;
+        }
+
+        .layout__sidebar:not(.layout__sidebar--right) {
+          display: none;
+        }
+
+        .layout__sidebar {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .layout__sidebar--right {
+          order: 3;
+        }
+
+        .layout__content {
+          order: 1;
+        }
+      }
     `,
   ];
 

@@ -109,6 +109,41 @@ export class AppCharacterDetail extends BaseElement {
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-normal);
       }
+
+      @media (max-width: 768px) {
+        .character-detail {
+          max-width: 100%;
+        }
+
+        .character-detail__title-wrapper {
+          padding-bottom: 16px;
+        }
+
+        .character-detail__title {
+          font-size: var(--font-size-lg);
+          line-height: var(--line-height-normal);
+        }
+
+        .character-detail__paragraph-wrapper {
+          padding-bottom: 12px;
+        }
+
+        .character-detail__section-title-wrapper {
+          padding-bottom: 8px;
+        }
+
+        .character-detail__list-wrapper {
+          padding-bottom: 12px;
+        }
+
+        .character-detail__list {
+          padding-left: 20px;
+        }
+
+        .error-state {
+          padding: 24px 0;
+        }
+      }
     `,
   ];
 

@@ -92,6 +92,26 @@ export class AppCharacterSummary extends BaseElement {
         letter-spacing: var(--letter-spacing-tight);
         color: var(--color-vx-warm-neutral-700);
       }
+
+      @media (max-width: 768px) {
+        .character-summary {
+          gap: 16px;
+        }
+
+        .character-summary__icon-container {
+          padding: 24px 16px;
+          min-height: 200px;
+        }
+
+        .character-summary__icon {
+          width: 150px;
+          height: 150px;
+        }
+
+        .character-summary__info {
+          gap: 12px;
+        }
+      }
     `,
   ];
 

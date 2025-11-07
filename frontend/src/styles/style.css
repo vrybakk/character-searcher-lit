@@ -34,3 +34,14 @@ body::before {
   position: relative;
   z-index: 1;
 }
+
+@media (max-width: 768px) {
+  #app {
+    padding: 20px 15px;
+  }
+
+  body::before {
+    background-size: clamp(300px, 80vw, 500px) auto;
+    background-position: clamp(-50px, -10vw, -80px) clamp(-20px, -5vh, -30px);
+  }
+}

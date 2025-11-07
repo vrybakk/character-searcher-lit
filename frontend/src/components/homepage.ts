@@ -40,6 +40,22 @@ export class AppHomepage extends BaseElement {
         padding-left: 24px;
         list-style: disc;
       }
+
+      @media (max-width: 768px) {
+        .homepage {
+          gap: 12px;
+        }
+
+        .homepage__heading {
+          font-size: var(--font-size-lg);
+          line-height: var(--line-height-normal);
+          margin-bottom: 8px;
+        }
+
+        .homepage__list {
+          padding-left: 20px;
+        }
+      }
     `,
   ];
 

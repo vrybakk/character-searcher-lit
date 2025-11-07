@@ -35,6 +35,18 @@ export class LogoTagline extends BaseElement {
         color: var(--color-vx-warm-neutral-700);
         text-align: left;
       }
+
+      @media (max-width: 768px) {
+        .logo-tagline__section {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        :host {
+          gap: 8px;
+        }
+      }
     `,
   ];
 

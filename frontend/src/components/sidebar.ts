@@ -129,6 +129,16 @@ export class AppSidebar extends BaseElement {
       .sidebar__footer-link:hover {
         opacity: 0.8;
       }
+
+      @media (max-width: 768px) {
+        .sidebar__featured {
+          gap: 16px;
+        }
+
+        .sidebar__character-list {
+          gap: 8px;
+        }
+      }
     `,
   ];
 
