@@ -108,6 +108,11 @@ export class AppCharacterList extends BaseElement {
         margin: 0;
       }
 
+      .character-birth-year {
+        font-weight: var(--font-weight-normal);
+        color: var(--color-vx-warm-neutral-500);
+      }
+
       .character-description {
         padding-bottom: 16px;
       }
@@ -267,13 +272,19 @@ export class AppCharacterList extends BaseElement {
               </div>
               <div class="character-info">
                 <div class="character-title">
-                  <h3 class="character-title-text">${character.name}</h3>
+                  <h3 class="character-title-text">
+                    ${character.name}${character.birth_year
+                      ? html` <span class="character-birth-year">(${character.birth_year})</span>`
+                      : ''}
+                  </h3>
                 </div>
-                <div class="character-description">
-                  <p class="character-description-text">
-                    ${character.description || character.birth_year || 'No description available.'}
-                  </p>
-                </div>
+                ${character.description
+                  ? html`
+                      <div class="character-description">
+                        <p class="character-description-text">${character.description}</p>
+                      </div>
+                    `
+                  : ''}
               </div>
             </div>
           `

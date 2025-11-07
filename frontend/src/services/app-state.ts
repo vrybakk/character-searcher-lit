@@ -21,24 +21,11 @@ let state: AppState = {
   isLoading: false,
 };
 
-let stateListeners: Array<() => void> = [];
-
 export function getState(): AppState {
   return { ...state };
 }
 
-export function subscribeToState(callback: () => void): () => void {
-  stateListeners.push(callback);
-  return () => {
-    const index = stateListeners.indexOf(callback);
-    if (index > -1) {
-      stateListeners.splice(index, 1);
-    }
-  };
-}
-
 function notifyStateChange(): void {
-  stateListeners.forEach((listener) => listener());
   window.dispatchEvent(
     new CustomEvent(EVENTS.STATE_UPDATED, {
       detail: getState(),

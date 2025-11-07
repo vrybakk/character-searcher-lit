@@ -6,10 +6,10 @@ import './components/layout';
 import './components/loading-spinner';
 import './components/logo-tagline';
 import './components/search';
-import './design-tokens/tokens.css';
 import { EVENTS, getState, updateStateFromRoute } from './services/app-state';
 import { router } from './services/router';
 import './styles/style.css';
+import './styles/tokens.css';
 import './types/events';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;

@@ -145,6 +145,7 @@ export class AppSidebar extends BaseElement {
       .sidebar__footer-link {
         color: var(--color-orange-default);
         text-decoration: underline;
+        text-underline-offset: 0.2em;
         cursor: pointer;
         font-weight: var(--font-weight-semibold);
       }
