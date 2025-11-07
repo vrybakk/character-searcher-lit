@@ -1,0 +1,29 @@
+/**
+ * Design System CSS Custom Properties
+ * 
+ */
+
+:root {
+  --color-vx-warm-neutral-50: #f9f7f7;
+  --color-vx-warm-neutral-100: #f1efef;
+  --color-vx-warm-neutral-200: #e7e4e4;
+  --color-vx-warm-neutral-300: #d8d4d4;
+  --color-vx-warm-neutral-400: #aaa5a5;
+  --color-vx-warm-neutral-500: #787474;
+  --color-vx-warm-neutral-700: #464343;
+
+  --color-sl-grey-neutral-300: #d4d4d8;
+  --color-sl-grey-neutral-500: #71717a;
+  --color-sl-grey-neutral-700: #3f3f46;
+
+  --color-sl-color-neutral-0: #ffffff;
+
+  --color-bw-white: #ffffff;
+
+  --color-grays-white: #ffffff;
+
+  --color-annotation-style-pink: #ff2d55;
+  --color-annotation-style-grey: #8e8e93;
+
+  --color-orange-default: #eb6a00;
+}
