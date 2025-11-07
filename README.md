@@ -44,6 +44,10 @@ I decided to use Docker because I don't have Python installed locally on my mach
 
 ## Architecture Decisions
 
+### Note on Typography
+
+I have a feeling that the font provided in the instructions (Inter from rsms.me/inter CDN) might be different from the font used in the Figma design, so there could be a mismatch in style. I followed the instructions to use the Inter font from the CDN, but if there are visual differences, this is likely the reason.
+
 ### 1. CSS Reset (`reset.css.ts`)
 
 **Why I use it:**
